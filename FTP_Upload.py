@@ -6,6 +6,7 @@ for FTP Access
 
 from ftplib import FTP
 import os, arcpy, shutil, datetime, zipfile, ConfigParser, traceback, sys
+from slackclient import SlackClient
 
 
 try:
@@ -16,7 +17,7 @@ try:
     # Set configuration file path
 
     config = ConfigParser.ConfigParser()
-    config.read(r'G:\SCRIPTS\FTP_Upload\ini\ftp_config.ini')
+    config.read(r'ftp_config_sample.ini')
 
     # Set log path
 
@@ -301,6 +302,27 @@ try:
         myfile.close()
 
     ftp.close()
+
+    # Variables required for slack connection
+
+    ftp_message = 'Greetings, nyc zoning, condo, shoreline, MIH, and tax lot files have been pushed to FTP ' \
+                  'and are currently available for download. Thank you!'
+
+    def send_slack_msg(text_content, credential_section, channel_reference):
+        slack_token = config.get(credential_section, 'slack_token')
+        icon_url = config.get('RESOURCES', 'icon_url')
+        username = config.get('RESOURCES', 'username')
+        channel = config.get(credential_section, channel_reference)
+        sc = SlackClient(slack_token)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            username=username,
+            text=text_content
+        )
+
+
+    send_slack_msg(ftp_message, "CREDENTIALS", "test_channel_key")
 
     EndTime = datetime.datetime.now().replace(microsecond=0)
     print("Script runtime: {}".format(EndTime - StartTime))

@@ -11,7 +11,7 @@ An installation of Python 2 with the following packages is required to run. Addi
 ##### FTP_Upload.py
 
 ```
-ftplib, os, shutil, arcpy, datetime, zipfile, traceback, sys, ConfigParser
+ftplib, os, shutil, arcpy, datetime, zipfile, traceback, sys, ConfigParser, SlackClient
 ```
 
 ### Instructions for running
